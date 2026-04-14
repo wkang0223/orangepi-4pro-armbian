@@ -6,7 +6,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 180
 
     steps:
       - name: Checkout build framework
@@ -27,7 +27,11 @@ jobs:
           ./compile.sh build \
             BOARD=orangepi-4pro \
             BRANCH=mainline \
-            BUILD_MINIMAL=yes \
+            BUILD_MINIMAL=no \
+            BUILD_DESKTOP=yes \
+            DESKTOP_ENVIRONMENT=xfce \
+            DESKTOP_ENVIRONMENT_CONFIG_NAME=config_base \
+            DESKTOP_APPGROUPS_SELECTED="browsers,office" \
             KERNEL_CONFIGURE=no \
             RELEASE=bookworm \
             SKIP_EXTERNAL_DRIVERS=yes \
