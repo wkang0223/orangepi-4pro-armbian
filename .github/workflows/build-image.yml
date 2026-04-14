@@ -24,7 +24,7 @@ jobs:
 
       - name: Build image
         run: |
-          sudo ./compile.sh build \
+          ./compile.sh build \
             BOARD=orangepi-4pro \
             BRANCH=mainline \
             BUILD_MINIMAL=yes \
