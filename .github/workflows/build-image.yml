@@ -6,7 +6,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    timeout-minutes: 240
 
     steps:
       - name: Checkout build framework
@@ -31,7 +31,7 @@ jobs:
             BUILD_DESKTOP=yes \
             DESKTOP_ENVIRONMENT=xfce \
             DESKTOP_ENVIRONMENT_CONFIG_NAME=config_base \
-            DESKTOP_APPGROUPS_SELECTED="browsers,office" \
+            DESKTOP_APPGROUPS_SELECTED="browsers,programming,desktop_tools,remote_desktop" \
             KERNEL_CONFIGURE=no \
             RELEASE=bookworm \
             SKIP_EXTERNAL_DRIVERS=yes \
