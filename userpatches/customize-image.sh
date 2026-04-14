@@ -12,11 +12,15 @@ echo "============================================================"
 echo "  Orange Pi 4 Pro — AI Vision + Robotics Image Setup"
 echo "============================================================"
 
+# ── Refresh apt cache first (required — chroot cache is empty on entry) ────────
+echo ">>> [0/9] Refreshing apt cache..."
+apt-get update -qq
+
 # ── Core development tools ────────────────────────────────────────────────────
 echo ">>> [1/9] Core dev tools..."
 apt-get install -y --no-install-recommends \
     git curl wget vim nano tmux htop tree \
-    build-essential cmake cmake-curses-gui pkg-config ninja-build \
+    build-essential cmake pkg-config ninja-build \
     python3-pip python3-venv python3-dev python3-setuptools python3-wheel \
     software-properties-common apt-transport-https ca-certificates gnupg \
     zip unzip p7zip-full lsb-release net-tools
@@ -35,23 +39,24 @@ apt-get install -y --no-install-recommends \
     gstreamer1.0-tools gstreamer1.0-plugins-base \
     gstreamer1.0-plugins-good gstreamer1.0-plugins-bad \
     gstreamer1.0-libav \
-    ffmpeg libavcodec-dev libavformat-dev libswscale-dev \
-    libcamera-apps libcamera-dev
+    ffmpeg libavcodec-dev libavformat-dev libswscale-dev
+# libcamera is optional — install if available
+apt-get install -y --no-install-recommends libcamera-apps libcamera-dev 2>/dev/null || \
+    echo "libcamera not available, skipping"
 
 # ── Python AI / ML stack ──────────────────────────────────────────────────────
 echo ">>> [4/9] Python AI/ML stack..."
 apt-get install -y --no-install-recommends \
     python3-numpy python3-scipy python3-matplotlib python3-pandas \
     python3-scikit-learn python3-pil python3-h5py \
-    python3-requests python3-flask python3-fastapi \
+    python3-requests python3-flask \
     jupyter
 
-# Additional pip packages (onnxruntime for fast edge inference, JupyterLab)
+# pip packages (onnxruntime for fast edge inference, JupyterLab)
 pip3 install --break-system-packages \
     onnxruntime \
     jupyterlab \
-    pyserial \
-    gpiod || echo "Warning: some pip packages skipped"
+    pyserial || echo "Warning: some pip packages skipped"
 
 # ── Robotics & Hardware Interface ─────────────────────────────────────────────
 echo ">>> [5/9] Robotics + Hardware..."
@@ -61,9 +66,10 @@ apt-get install -y --no-install-recommends \
     picocom minicom \
     can-utils \
     evtest \
-    libusb-1.0-0-dev usbutils \
-    arduino \
-    fritzing
+    libusb-1.0-0-dev usbutils
+# arduino-core2 is the Debian Bookworm package name for Arduino
+apt-get install -y --no-install-recommends arduino 2>/dev/null || \
+    echo "arduino package not available, install manually post-boot"
 
 # ── Docker CE (for Ollama + ROS 2 + Open WebUI containers) ───────────────────
 echo ">>> [6/9] Docker CE..."
@@ -95,7 +101,7 @@ systemctl enable xrdp
 adduser xrdp ssl-cert 2>/dev/null || true
 
 # ── Post-boot helper script ───────────────────────────────────────────────────
-# Drops a README on the XFCE desktop with quick-start instructions
+mkdir -p /etc/skel/Desktop
 cat > /etc/skel/Desktop/QUICK-START.txt << 'EOF'
 ========================================
   Orange Pi 4 Pro — AI + Robotics Setup
@@ -142,7 +148,7 @@ cat > /etc/skel/Desktop/QUICK-START.txt << 'EOF'
    Type: rdp://orangepi.local
    Or use Microsoft Remote Desktop app
 
-CONNECT TO DOCKER:
+9. ADD YOURSELF TO DOCKER GROUP:
    sudo usermod -aG docker $USER && newgrp docker
 EOF
 
