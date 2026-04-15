@@ -29,7 +29,7 @@ apt-get install -y --no-install-recommends \
 echo ">>> [2/9] Node.js 22..."
 curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
 apt-get install -y nodejs
-npm install -g npm@latest
+# npm is bundled with NodeSource nodejs — no separate upgrade needed in chroot
 
 # ── Computer Vision (OpenCV + GStreamer + FFmpeg) ─────────────────────────────
 echo ">>> [3/9] Computer Vision stack..."
